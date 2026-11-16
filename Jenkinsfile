@@ -1,0 +1,60 @@
+@Library('cicdlibrary')_
+
+pipeline
+{
+    agent any
+    stages
+    {
+        stage('ContDownload')
+        {
+            steps
+            {
+              script
+              {
+                cicd.gitDownload('maven')  
+              }
+            }
+        }
+        stage('ContBuild')
+        {
+            steps
+            {
+              script
+              {
+                cicd.newBuild() 
+              }
+            }
+        }
+        stage('ContDeployment')
+        {
+            steps
+            {
+              script
+              {
+                cicd.newDeploy("DeclarativePipelinewithSharedLibraries","172.31.45.42","testapp")
+              }
+            }
+        }
+        stage('ContTesting')
+        {
+            steps
+            {
+              script
+              {
+                cicd.gitDownload("Testingcode")
+                cicd.newTesting("DeclarativePipelinewithSharedLibraries")
+              }
+            }
+        }
+        stage('ContDelivery')
+        {
+            steps
+            {
+              script
+              {
+                cicd.newDeploy("DeclarativePipelinewithSharedLibraries","172.31.44.72","prodapp")
+              }
+            }
+        }
+    }
+}
